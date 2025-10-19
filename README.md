@@ -1,38 +1,37 @@
-# 🚀 Farcaster Bird - FINAL WORKING VERSION
+# 🚀 Farcaster Bird - FREE PLAY VERSION
 
-## ✅ WHAT WAS FIXED:
+## ✅ THIS VERSION WORKS IN FARCASTER!
 
-### Previous Errors:
-❌ Wrong SDK version (@0.39 instead of @0.0.39) → FIXED
-❌ Separate game.js file causing module issues → FIXED
-❌ onclick attributes not working → FIXED
-❌ Provider not initializing properly → FIXED
+### What's included:
+- ✅ Farcaster SDK (required for Farcaster apps)
+- ✅ sdk.actions.ready() call (tells Farcaster app is loaded)
+- ✅ FREE PLAY (no payment for testing)
+- ✅ Full game mechanics
+- ✅ Progressive difficulty
 
-### Current Solution:
-✅ Correct SDK version: @farcaster/miniapp-sdk@0.0.39
-✅ Everything in ONE single index.html file
-✅ Proper event listeners (no onclick)
-✅ SDK ready check before payment
-✅ Better error messages
+### Why this works:
+1. Calls sdk.actions.ready() → Farcaster knows app loaded
+2. Uses event listeners (not onclick) → ES modules compatible
+3. No payment system → No wallet errors
 
-## 📦 FILES:
-- index.html (ONLY FILE NEEDED!)
+## 🚀 Deploy:
+1. Upload index.html to GitHub
+2. Vercel auto-deploys
+3. Test in Farcaster app
+4. PLAY button should work now!
 
-## 🚀 DEPLOY:
-1. Upload index.html to Vercel
-2. Deploy
-3. Test in Farcaster!
+## 🎮 How to play:
+- Click PLAY button
+- Tap screen or press Space to fly
+- Avoid purple pipes
+- Score increases as you pass pipes
 
-## 💰 PAYMENT:
-- 0.0001 ETH per game
-- Base chain
-- Wallet: 0xa0E19656321CaBaF46d434Fa71B263AbB6959F07
+## 💰 Next step:
+Once this works, we can add payment system!
 
-## 🔧 TEST:
-- Normal: Click PLAY
-- Test mode: SHIFT + Click PLAY (skip payment)
-
-## 📝 NOTES:
-- No game.js file needed - everything is in index.html
-- Payment only works in Farcaster Mini App context
-- SHIFT+Click for testing without payment
+## 🔍 Debug:
+If still not working:
+1. Open Farcaster
+2. Open your app
+3. Open browser DevTools (if possible)
+4. Check console for errors

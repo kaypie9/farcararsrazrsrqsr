@@ -13,14 +13,10 @@
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, rgba(102,126,234,0.95), rgba(118,75,162,0.95)); color: white; border-radius: 15px; padding: 30px; }
         h1 { font-size: 48px; margin-bottom: 25px; color: white; text-shadow: 3px 3px 10px rgba(0,0,0,0.5); }
         p { font-size: 18px; margin: 20px 0; text-align: center; }
-        .btn { padding: 18px 60px; font-size: 24px; font-weight: bold; background: linear-gradient(45deg, #FFD700, #FFA500); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(255,215,0,0.4); margin-top: 20px; color: #333; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; }
+        .btn { padding: 18px 60px; font-size: 24px; font-weight: bold; background: linear-gradient(45deg, #FFD700, #FFA500); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(255,215,0,0.4); margin-top: 20px; color: #333; text-transform: uppercase; letter-spacing: 2px; }
         .btn:hover { transform: translateY(-3px); }
-        .spinner { border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #FFD700; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 25px auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         #score { position: absolute; top: 25px; left: 25px; font-size: 42px; font-weight: bold; color: white; text-shadow: 3px 3px 10px rgba(0,0,0,0.5); z-index: 10; }
         .hidden { display: none !important; }
-        .error { color: #ff6b6b; margin-top: 15px; font-size: 14px; background: rgba(255,107,107,0.2); padding: 10px 15px; border-radius: 8px; }
-        .info { font-size: 14px; background: rgba(255,255,255,0.15); padding: 12px 20px; border-radius: 10px; margin: 15px 0; backdrop-filter: blur(10px); }
     </style>
 </head>
 <body>
@@ -30,168 +26,34 @@
 
         <div id="start" class="overlay">
             <h1>🚀 Farcaster Bird</h1>
-            <p>Tap screen to fly or Space</p>
-            <button class="btn" id="startBtn">PLAY</button>
-        </div>
-
-        <div id="paying" class="overlay hidden">
-            <h1>🚀 Get Ready!</h1>
-            <div class="spinner"></div>
-            <div class="info">Preparing your game...<br>Please approve in your wallet</div>
-            <div id="paymentError" class="error hidden"></div>
+            <p>FREE TEST VERSION<br>Tap screen to fly or Space</p>
+            <button class="btn" id="playBtn">PLAY</button>
         </div>
 
         <div id="gameover" class="overlay hidden">
             <h1>Game Over!</h1>
-            <div id="finalscore" style="font-size: 36px; margin: 25px 0; color: #FFD700;">Score: 0</div>
+            <div style="font-size: 36px; margin: 25px 0; color: #FFD700;" id="finalscore">Score: 0</div>
             <button class="btn" id="restartBtn">PLAY AGAIN</button>
         </div>
     </div>
 
     <script type="module">
-    // CACHE BUSTER: v1760839676
-    console.log('🚀 Loading Farcaster Bird v1760839676...');
+    // Import Farcaster SDK - REQUIRED for Farcaster apps
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk@0.0.39';
 
-    // Import SDK with EXACT correct version
-    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk@0.0.39?v=1760839676';
+    console.log('🚀 Initializing Farcaster Bird...');
 
-    const PAYMENT_ADDRESS = '0xa0E19656321CaBaF46d434Fa71B263AbB6959F07';
-    const PAYMENT_AMOUNT = '0x5AF3107A4000';
-    const BASE_CHAIN_ID = '0x2105';
-
-    let provider = null;
-    let sdkReady = false;
-
-    // Initialize SDK
+    // IMPORTANT: Tell Farcaster the app is ready
     (async () => {
         try {
-            console.log('Calling sdk.actions.ready()...');
             await sdk.actions.ready();
-            sdkReady = true;
-            console.log('✅ SDK ready!');
-
-            console.log('Getting Ethereum provider...');
-            provider = await sdk.wallet.getEthereumProvider();
-            console.log('✅ Provider ready:', !!provider);
+            console.log('✅ SDK ready - Farcaster knows app loaded');
         } catch (error) {
-            console.error('❌ SDK initialization failed:', error);
+            console.error('❌ SDK error:', error);
         }
     })();
 
-    // Payment function
-    async function handlePayment(event) {
-        console.log('🎮 PLAY button clicked');
-
-        const startScreen = document.getElementById('start');
-        const payingScreen = document.getElementById('paying');
-        const gameOverScreen = document.getElementById('gameover');
-        const errorDiv = document.getElementById('paymentError');
-
-        // TEST MODE: SHIFT+Click skips payment
-        if (event?.shiftKey) {
-            console.log('🔧 TEST MODE - Skipping payment');
-            startScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            startGame();
-            return;
-        }
-
-        // Check SDK ready
-        if (!sdkReady) {
-            console.error('SDK not ready yet');
-            alert('SDK not ready. Wait a moment and try again.');
-            return;
-        }
-
-        // Show paying screen
-        startScreen.classList.add('hidden');
-        gameOverScreen.classList.add('hidden');
-        payingScreen.classList.remove('hidden');
-        errorDiv.classList.add('hidden');
-
-        try {
-            // Get provider if not already available
-            if (!provider) {
-                console.log('Reinitializing provider...');
-                provider = await sdk.wallet.getEthereumProvider();
-            }
-
-            console.log('Requesting accounts...');
-            const accounts = await provider.request({ method: 'eth_requestAccounts' });
-            console.log('✅ Account:', accounts[0]);
-
-            // Check chain
-            console.log('Checking chain...');
-            const chainId = await provider.request({ method: 'eth_chainId' });
-            console.log('Current chain:', chainId, 'Target:', BASE_CHAIN_ID);
-
-            // Switch to Base if needed
-            if (chainId !== BASE_CHAIN_ID) {
-                console.log('Switching to Base chain...');
-                try {
-                    await provider.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: BASE_CHAIN_ID }]
-                    });
-                    console.log('✅ Switched to Base');
-                } catch (switchError) {
-                    console.log('Adding Base chain...');
-                    await provider.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: BASE_CHAIN_ID,
-                            chainName: 'Base',
-                            nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
-                            rpcUrls: ['https://mainnet.base.org'],
-                            blockExplorerUrls: ['https://basescan.org']
-                        }]
-                    });
-                    console.log('✅ Base chain added');
-                }
-            }
-
-            // Send transaction
-            console.log('Sending transaction...');
-            const txHash = await provider.request({
-                method: 'eth_sendTransaction',
-                params: [{
-                    from: accounts[0],
-                    to: PAYMENT_ADDRESS,
-                    value: PAYMENT_AMOUNT
-                }]
-            });
-
-            console.log('✅ Transaction sent:', txHash);
-
-            // Start game
-            payingScreen.classList.add('hidden');
-            startGame();
-
-        } catch (error) {
-            console.error('❌ Payment error:', error);
-
-            // Show error
-            const errorMsg = error.message?.includes('reject') || error.message?.includes('denied') ? 
-                'Payment cancelled' : 
-                'Error: ' + (error.message || 'Unknown error');
-
-            errorDiv.textContent = errorMsg;
-            errorDiv.classList.remove('hidden');
-
-            // Return to start after 3 seconds
-            setTimeout(() => {
-                payingScreen.classList.add('hidden');
-                startScreen.classList.remove('hidden');
-            }, 3000);
-        }
-    }
-
-    // Attach button listeners
-    document.getElementById('startBtn').addEventListener('click', handlePayment);
-    document.getElementById('restartBtn').addEventListener('click', handlePayment);
-    console.log('✅ Button listeners attached');
-
-    // === GAME CODE ===
+    // Game code
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let gameState = 'start', score = 0, frames = 0;
@@ -295,7 +157,8 @@
     }
 
     function startGame() {
-        console.log('🎮 Game starting!');
+        console.log('🎮 Starting game!');
+        document.getElementById('start').classList.add('hidden');
         gameState = 'playing';
         bird.y = 120;
         bird.vy = 0;
@@ -307,6 +170,12 @@
         document.getElementById('score').textContent = '0';
     }
 
+    function restart() {
+        console.log('🔄 Restarting...');
+        document.getElementById('gameover').classList.add('hidden');
+        startGame();
+    }
+
     function endGame() {
         if (gameState !== 'playing') return;
         console.log('💀 Game over! Score:', score);
@@ -315,6 +184,11 @@
         document.getElementById('gameover').classList.remove('hidden');
     }
 
+    // Button listeners
+    document.getElementById('playBtn').addEventListener('click', startGame);
+    document.getElementById('restartBtn').addEventListener('click', restart);
+
+    // Game controls
     canvas.addEventListener('click', () => { if (gameState === 'playing') bird.jump(); });
     document.addEventListener('keydown', e => {
         if (gameState === 'playing' && (e.code === 'ArrowUp' || e.code === 'Space')) {
@@ -324,7 +198,7 @@
     });
 
     loop();
-    console.log('✅ Game initialized - v1760839676');
+    console.log('✅ Game ready!');
     </script>
 </body>
 </html>
