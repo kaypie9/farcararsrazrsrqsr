@@ -49,65 +49,70 @@
     </div>
 
     <script type="module">
-    // FIXED: Correct SDK import
-    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk@0.0.39';
+    // CACHE BUSTER: v1760839676
+    console.log('🚀 Loading Farcaster Bird v1760839676...');
+
+    // Import SDK with EXACT correct version
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk@0.0.39?v=1760839676';
 
     const PAYMENT_ADDRESS = '0xa0E19656321CaBaF46d434Fa71B263AbB6959F07';
     const PAYMENT_AMOUNT = '0x5AF3107A4000';
     const BASE_CHAIN_ID = '0x2105';
 
-    let provider;
+    let provider = null;
     let sdkReady = false;
-
-    console.log('🚀 Initializing Farcaster Bird...');
 
     // Initialize SDK
     (async () => {
         try {
+            console.log('Calling sdk.actions.ready()...');
             await sdk.actions.ready();
-            console.log('✅ SDK ready');
             sdkReady = true;
+            console.log('✅ SDK ready!');
+
+            console.log('Getting Ethereum provider...');
             provider = await sdk.wallet.getEthereumProvider();
             console.log('✅ Provider ready:', !!provider);
         } catch (error) {
-            console.error('❌ SDK init error:', error);
+            console.error('❌ SDK initialization failed:', error);
         }
     })();
 
     // Payment function
-    async function startPayment(event) {
+    async function handlePayment(event) {
+        console.log('🎮 PLAY button clicked');
+
         const startScreen = document.getElementById('start');
         const payingScreen = document.getElementById('paying');
         const gameOverScreen = document.getElementById('gameover');
         const errorDiv = document.getElementById('paymentError');
 
-        console.log('🎮 PLAY clicked');
-
-        // SHIFT+Click to skip payment (testing)
-        if (event && event.shiftKey) {
-            console.log('🔧 TEST MODE - Skip payment');
+        // TEST MODE: SHIFT+Click skips payment
+        if (event?.shiftKey) {
+            console.log('🔧 TEST MODE - Skipping payment');
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
             startGame();
             return;
         }
 
-        // Check if SDK ready
+        // Check SDK ready
         if (!sdkReady) {
-            errorDiv.textContent = 'SDK not ready. Please wait and try again.';
-            errorDiv.classList.remove('hidden');
-            setTimeout(() => errorDiv.classList.add('hidden'), 3000);
+            console.error('SDK not ready yet');
+            alert('SDK not ready. Wait a moment and try again.');
             return;
         }
 
+        // Show paying screen
         startScreen.classList.add('hidden');
         gameOverScreen.classList.add('hidden');
         payingScreen.classList.remove('hidden');
         errorDiv.classList.add('hidden');
 
         try {
+            // Get provider if not already available
             if (!provider) {
-                console.log('Getting provider...');
+                console.log('Reinitializing provider...');
                 provider = await sdk.wallet.getEthereumProvider();
             }
 
@@ -115,16 +120,20 @@
             const accounts = await provider.request({ method: 'eth_requestAccounts' });
             console.log('✅ Account:', accounts[0]);
 
+            // Check chain
+            console.log('Checking chain...');
             const chainId = await provider.request({ method: 'eth_chainId' });
-            console.log('Chain ID:', chainId);
+            console.log('Current chain:', chainId, 'Target:', BASE_CHAIN_ID);
 
+            // Switch to Base if needed
             if (chainId !== BASE_CHAIN_ID) {
-                console.log('Switching to Base...');
+                console.log('Switching to Base chain...');
                 try {
                     await provider.request({
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: BASE_CHAIN_ID }]
                     });
+                    console.log('✅ Switched to Base');
                 } catch (switchError) {
                     console.log('Adding Base chain...');
                     await provider.request({
@@ -137,26 +146,39 @@
                             blockExplorerUrls: ['https://basescan.org']
                         }]
                     });
+                    console.log('✅ Base chain added');
                 }
             }
 
+            // Send transaction
             console.log('Sending transaction...');
             const txHash = await provider.request({
                 method: 'eth_sendTransaction',
-                params: [{ from: accounts[0], to: PAYMENT_ADDRESS, value: PAYMENT_AMOUNT }]
+                params: [{
+                    from: accounts[0],
+                    to: PAYMENT_ADDRESS,
+                    value: PAYMENT_AMOUNT
+                }]
             });
 
-            console.log('✅ Transaction:', txHash);
+            console.log('✅ Transaction sent:', txHash);
+
+            // Start game
             payingScreen.classList.add('hidden');
             startGame();
 
         } catch (error) {
             console.error('❌ Payment error:', error);
-            errorDiv.textContent = error.message?.includes('reject') || error.message?.includes('denied') ? 
+
+            // Show error
+            const errorMsg = error.message?.includes('reject') || error.message?.includes('denied') ? 
                 'Payment cancelled' : 
                 'Error: ' + (error.message || 'Unknown error');
+
+            errorDiv.textContent = errorMsg;
             errorDiv.classList.remove('hidden');
 
+            // Return to start after 3 seconds
             setTimeout(() => {
                 payingScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
@@ -164,18 +186,19 @@
         }
     }
 
-    // Attach event listeners
-    document.getElementById('startBtn').addEventListener('click', startPayment);
-    document.getElementById('restartBtn').addEventListener('click', startPayment);
+    // Attach button listeners
+    document.getElementById('startBtn').addEventListener('click', handlePayment);
+    document.getElementById('restartBtn').addEventListener('click', handlePayment);
+    console.log('✅ Button listeners attached');
 
-    // Game code
+    // === GAME CODE ===
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let gameState = 'start', score = 0, frames = 0;
     const GRAVITY = 0.15, JUMP = -8;
     let pipeGap = 350;
 
-    let bird = {
+    const bird = {
         x: 100, y: 320, vy: 0, size: 30,
         update() {
             this.vy += GRAVITY;
@@ -233,7 +256,7 @@
     function updateDifficulty() {
         if (score <= 15) pipeGap = Math.floor(350 / (1 + (score / 15) * 0.3));
         else {
-            let mult = 1.3 + ((score - 15) / 50) * 0.5;
+            const mult = 1.3 + ((score - 15) / 50) * 0.5;
             pipeGap = Math.floor(350 / Math.min(mult, 2));
         }
     }
@@ -272,7 +295,7 @@
     }
 
     function startGame() {
-        console.log('🎮 Starting game!');
+        console.log('🎮 Game starting!');
         gameState = 'playing';
         bird.y = 120;
         bird.vy = 0;
@@ -301,7 +324,7 @@
     });
 
     loop();
-    console.log('✅ Game loop started');
+    console.log('✅ Game initialized - v1760839676');
     </script>
 </body>
 </html>
