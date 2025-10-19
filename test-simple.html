@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farcaster Bird - TEST</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: Arial, sans-serif; }
+        #gameContainer { position: relative; }
+        canvas { border: 3px solid #fff; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, rgba(102,126,234,0.95), rgba(118,75,162,0.95)); color: white; border-radius: 15px; padding: 30px; }
+        h1 { font-size: 48px; margin-bottom: 25px; color: white; text-shadow: 3px 3px 10px rgba(0,0,0,0.5); }
+        p { font-size: 18px; margin: 20px 0; text-align: center; }
+        .btn { padding: 18px 60px; font-size: 24px; font-weight: bold; background: linear-gradient(45deg, #FFD700, #FFA500); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(255,215,0,0.4); margin-top: 20px; color: #333; text-transform: uppercase; letter-spacing: 2px; }
+        .btn:hover { transform: translateY(-3px); }
+        #score { position: absolute; top: 25px; left: 25px; font-size: 42px; font-weight: bold; color: white; text-shadow: 3px 3px 10px rgba(0,0,0,0.5); z-index: 10; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="canvas" width="360" height="640"></canvas>
+        <div id="score" class="hidden">0</div>
+
+        <div id="start" class="overlay">
+            <h1>🚀 Farcaster Bird</h1>
+            <p>TEST VERSION - FREE PLAY</p>
+            <button class="btn" onclick="startGame()">PLAY</button>
+        </div>
+
+        <div id="gameover" class="overlay hidden">
+            <h1>Game Over!</h1>
+            <div style="font-size: 36px; margin: 25px 0; color: #FFD700;" id="finalscore">Score: 0</div>
+            <button class="btn" onclick="restart()">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+    console.log('🚀 Simple test version loading...');
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let gameState = 'start', score = 0, frames = 0;
+    const GRAVITY = 0.15, JUMP = -8;
+    let pipeGap = 350;
+
+    const bird = {
+        x: 100, y: 320, vy: 0, size: 30,
+        update() {
+            this.vy += GRAVITY;
+            this.vy *= 0.99;
+            if (this.vy > 8) this.vy = 8;
+            if (this.vy < -10) this.vy = -10;
+            this.y += this.vy;
+            if (this.y > canvas.height - 50 - this.size) endGame();
+            if (this.y < 0) this.y = 0;
+        },
+        jump() { this.vy = JUMP; },
+        draw() {
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(this.x + 8, this.y - 5, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(this.x + 10, this.y - 5, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    };
+
+    let pipes = [];
+    class Pipe {
+        constructor() {
+            this.x = canvas.width;
+            this.w = 60;
+            this.gap = pipeGap;
+            this.top = Math.random() * (canvas.height - this.gap - 200) + 50;
+            this.passed = false;
+        }
+        update() { this.x -= 1.2; }
+        draw() {
+            ctx.fillStyle = '#9B59B6';
+            ctx.fillRect(this.x, 0, this.w, this.top);
+            ctx.fillRect(this.x, this.top + this.gap, this.w, canvas.height);
+            ctx.strokeStyle = '#8E44AD';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(this.x, 0, this.w, this.top);
+            ctx.strokeRect(this.x, this.top + this.gap, this.w, canvas.height);
+        }
+        hits(b) {
+            if (b.x + b.size > this.x && b.x - b.size < this.x + this.w) {
+                if (b.y - b.size < this.top || b.y + b.size > this.top + this.gap) return true;
+            }
+            return false;
+        }
+    }
+
+    function updateDifficulty() {
+        if (score <= 15) pipeGap = Math.floor(350 / (1 + (score / 15) * 0.3));
+        else {
+            const mult = 1.3 + ((score - 15) / 50) * 0.5;
+            pipeGap = Math.floor(350 / Math.min(mult, 2));
+        }
+    }
+
+    function drawBG() {
+        const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        g.addColorStop(0, '#667eea');
+        g.addColorStop(1, '#764ba2');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#553c9a';
+        ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+    }
+
+    function loop() {
+        frames++;
+        drawBG();
+        if (gameState === 'playing') {
+            updateDifficulty();
+            bird.update();
+            if (frames % 150 === 0) pipes.push(new Pipe());
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].update();
+                pipes[i].draw();
+                if (pipes[i].hits(bird)) endGame();
+                if (!pipes[i].passed && bird.x > pipes[i].x + pipes[i].w) {
+                    pipes[i].passed = true;
+                    score++;
+                    document.getElementById('score').textContent = score;
+                }
+                if (pipes[i].x + pipes[i].w < 0) pipes.splice(i, 1);
+            }
+        } else pipes.forEach(p => p.draw());
+        bird.draw();
+        requestAnimationFrame(loop);
+    }
+
+    function startGame() {
+        console.log('🎮 Starting game!');
+        document.getElementById('start').classList.add('hidden');
+        gameState = 'playing';
+        bird.y = 120;
+        bird.vy = 0;
+        pipes = [];
+        score = 0;
+        frames = 0;
+        pipeGap = 350;
+        document.getElementById('score').classList.remove('hidden');
+        document.getElementById('score').textContent = '0';
+    }
+
+    function restart() {
+        console.log('🔄 Restarting...');
+        document.getElementById('gameover').classList.add('hidden');
+        startGame();
+    }
+
+    function endGame() {
+        if (gameState !== 'playing') return;
+        console.log('💀 Game over! Score:', score);
+        gameState = 'gameover';
+        document.getElementById('finalscore').textContent = 'Score: ' + score;
+        document.getElementById('gameover').classList.remove('hidden');
+    }
+
+    canvas.addEventListener('click', () => { if (gameState === 'playing') bird.jump(); });
+    document.addEventListener('keydown', e => {
+        if (gameState === 'playing' && (e.code === 'ArrowUp' || e.code === 'Space')) {
+            e.preventDefault();
+            bird.jump();
+        }
+    });
+
+    loop();
+    console.log('✅ Test version ready! Click PLAY to start.');
+    </script>
+</body>
+</html>
