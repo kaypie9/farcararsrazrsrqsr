@@ -1,13 +1,20 @@
-# 🚀 Farcaster Bird - Pay to Play Game
+# 🚀 Farcaster Bird - FIXED VERSION
 
-Payment: 0.0001 ETH per game on Base chain
-Your wallet: 0xa0E19656321CaBaF46d434Fa71B263AbB6959F07
+## ✅ What was fixed:
+- Changed from onclick attributes to proper event listeners
+- Added DOMContentLoaded handler
+- Fixed ES module scope issues
 
-## Deploy to Vercel:
-1. Push to GitHub
-2. Import to Vercel
-3. Deploy!
+## 💰 Payment:
+- 0.0001 ETH per game
+- Base chain
+- Your wallet: 0xa0E19656321CaBaF46d434Fa71B263AbB6959F07
 
-## Test:
-- Normal: Click PLAY
-- Test mode: SHIFT+Click PLAY (skip payment)
+## 🚀 Deploy:
+1. Extract files
+2. Push to GitHub
+3. Deploy to Vercel
+4. Test in Farcaster!
+
+## 🔧 Test mode:
+Hold SHIFT + Click PLAY to skip payment (testing only)

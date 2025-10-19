@@ -27,10 +27,27 @@
     <div id="gameContainer">
         <canvas id="canvas" width="360" height="640"></canvas>
         <div id="score" class="hidden">0</div>
-        <div id="start" class="overlay"><h1>🚀 Farcaster Bird</h1><p>Tap screen to fly or Space</p><button class="btn" onclick="startPayment(event)">PLAY</button></div>
-        <div id="paying" class="overlay hidden"><h1>🚀 Get Ready!</h1><div class="spinner"></div><div class="info">Preparing your game...<br>Please approve in your wallet</div><div id="paymentError" class="error hidden"></div></div>
-        <div id="gameover" class="overlay hidden"><h1>Game Over!</h1><div id="finalscore" style="font-size: 36px; margin: 25px 0; color: #FFD700;">Score: 0</div><button class="btn" onclick="startPayment(event)">PLAY AGAIN</button></div>
+
+        <div id="start" class="overlay">
+            <h1>🚀 Farcaster Bird</h1>
+            <p>Tap screen to fly or Space</p>
+            <button class="btn" id="startBtn">PLAY</button>
+        </div>
+
+        <div id="paying" class="overlay hidden">
+            <h1>🚀 Get Ready!</h1>
+            <div class="spinner"></div>
+            <div class="info">Preparing your game...<br>Please approve in your wallet</div>
+            <div id="paymentError" class="error hidden"></div>
+        </div>
+
+        <div id="gameover" class="overlay hidden">
+            <h1>Game Over!</h1>
+            <div id="finalscore" style="font-size: 36px; margin: 25px 0; color: #FFD700;">Score: 0</div>
+            <button class="btn" id="restartBtn">PLAY AGAIN</button>
+        </div>
     </div>
+
     <script type="module" src="./game.js"></script>
 </body>
 </html>
