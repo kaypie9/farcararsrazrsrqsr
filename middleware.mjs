@@ -6,8 +6,12 @@ export function middleware(req) {
   res.headers.set("X-Frame-Options", "ALLOW-FROM *");
   res.headers.set(
     "Content-Security-Policy",
-    "frame-ancestors 'self' https://* http://* *;"
+    "frame-ancestors * https://* http://*;"
   );
 
   return res;
 }
+
+export const config = {
+  matcher: "/:path*",
+};
