@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farcaster Bird - Mini</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .play {
+      background: #28a745;
+      color: white;
+    }
+    .leader {
+      background: #ffca28;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🐦 Farcaster Bird</h1>
+    <button class="play" onclick="window.location.href='https://farcasterbird.vercel.app/index.html'">▶️ Play</button>
+    <button class="leader" onclick="window.location.href='https://farcasterbird.vercel.app/api/leaderboard'">🏆 Leaderboard</button>
+  </div>
+</body>
+</html>
