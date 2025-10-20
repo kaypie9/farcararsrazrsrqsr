@@ -1,4 +1,10 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjUyNzU5OSwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGEwRTE5NjU2MzIxQ2FCYUY0NmQ0MzRGYTcxQjI2M0FiQjY5NTlGMDcifQ",
+    "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXJiaXJkLnZlcmNlbC5hcHAifQ",
+    "signature": "A0E4fsv6rGimbZ1qfZpB3xXtrc4LOydpKQj8p2Mum8oy2A+qQgzT/roegQxh4EE3OQbLCdXov5VEbEsDDNZy7xs="
+  }
+}
   "miniapp": {
     "version": "1",
     "name": "Farcaster Bird",
