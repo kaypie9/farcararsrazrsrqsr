@@ -15,7 +15,7 @@
     "version": "1.0.0",
     "url": "https://farcasterbird.vercel.app/api/frame"
   },
-  "miniapp": {
+  "miniApp": {
     "version": "1.0.0",
     "name": "Farcaster Bird",
     "iconUrl": "https://placehold.co/128x128?text=FB",
