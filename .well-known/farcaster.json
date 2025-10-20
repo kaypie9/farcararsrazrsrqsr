@@ -2,8 +2,7 @@
   "id": "farcasterbird",
   "name": "Farcaster Bird",
   "icon": "https://placehold.co/128x128?text=FB",
-  "homepageUrl": ""homeUrl": "https://farcasterbird.vercel.app/api/frame",
-",
+  "homepageUrl": "https://farcasterbird.vercel.app",
   "accountAssociation": {
     "header": "eyJmaWQiOjUyNzU5OSwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGEwRTE5NjU2MzIxQ2FCYUY0NmQ0MzRGYTcxQjI2M0FiQjY5NTlGMDcifQ",
     "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXJiaXJkLnZlcmNlbC5hcHAifQ",
@@ -20,7 +19,7 @@
     "version": "1.0.0",
     "name": "Farcaster Bird",
     "iconUrl": "https://placehold.co/128x128?text=FB",
-    "homeUrl": "https://farcasterbird.vercel.app",
+    "homeUrl": "https://farcasterbird.vercel.app/api/frame",
     "imageUrl": "https://placehold.co/600x400?text=Farcaster+Bird",
     "buttonTitle": "▶️ Play",
     "splashImageUrl": "https://placehold.co/600x400?text=Loading...",
