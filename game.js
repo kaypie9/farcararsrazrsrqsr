@@ -87,9 +87,9 @@ class Pipe {
     }
 
     collidesWith(bird) {
-        if (bird.x + bird.radius > this.x && 
+        if (bird.x + bird.radius > this.x &&
             bird.x - bird.radius < this.x + this.width) {
-            if (bird.y - bird.radius < this.topHeight || 
+            if (bird.y - bird.radius < this.topHeight ||
                 bird.y + bird.radius > this.topHeight + this.gap) {
                 return true;
             }
@@ -179,14 +179,33 @@ function startGame() {
     console.log('✅ Game started!');
 }
 
-// End game
+// ✅ End game (WITH sendScore inside)
 function endGame() {
     if (gameState !== 'playing') return;
-
     console.log('💀 Game over! Score:', score);
+
     gameState = 'over';
     document.getElementById('final').textContent = 'Score: ' + score;
     document.getElementById('over').classList.remove('hide');
+
+    // Send score to API
+    sendScore("noel34", score);
+}
+
+// ✅ Function to POST score to backend
+async function sendScore(username, score) {
+    try {
+        const response = await fetch('/api/score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, score })
+        });
+
+        const data = await response.json();
+        console.log("✅ Score stored:", data);
+    } catch (err) {
+        console.error("❌ Failed to send score:", err);
+    }
 }
 
 // Event listeners
