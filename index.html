@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farcaster Bird</title>
+    <meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://placehold.co/600x400","button":{"title":"🚀 Play","action":{"type":"launch_frame","name":"Farcaster Bird","splashBackgroundColor":"#764ba2"}}}'>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game">
+        <canvas id="canvas" width="360" height="640"></canvas>
+        <div id="score">0</div>
+
+        <div id="start" class="screen">
+            <h1>🚀 Farcaster Bird</h1>
+            <p>Tap screen to fly or Space</p>
+            <button id="playBtn">PLAY</button>
+        </div>
+
+        <div id="over" class="screen hide">
+            <h1>Game Over!</h1>
+            <div id="final">Score: 0</div>
+            <button id="restartBtn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
