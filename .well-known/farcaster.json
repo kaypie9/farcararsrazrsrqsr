@@ -1,5 +1,4 @@
-{
-  "id": "farcasterbird",
+{"id": "farcasterbird",
   "name": "Farcaster Bird",
   "icon": "https://placehold.co/128x128?text=FB",
   "homepageUrl": "https://farcasterbird.vercel.app",
@@ -27,4 +26,3 @@
     "description": "Tap to fly! Avoid pipes and compete for the top score.",
     "primaryCategory": "games"
   }
-}
