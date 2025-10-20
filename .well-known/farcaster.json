@@ -1,0 +1,15 @@
+{
+  "miniapp": {
+    "version": "1",
+    "name": "Farcaster Bird",
+    "iconUrl": "https://placehold.co/200x200/FFD700/333?text=🚀",
+    "homeUrl": "https://YOUR-DOMAIN-HERE.vercel.app",
+    "imageUrl": "https://placehold.co/600x400/667eea/white?text=Farcaster+Bird",
+    "buttonTitle": "🚀 Play",
+    "splashImageUrl": "https://placehold.co/200x200/FFD700/333?text=🚀",
+    "splashBackgroundColor": "#764ba2",
+    "description": "Tap to fly! Avoid the pipes and beat your high score in this addictive Flappy Bird style game.",
+    "subtitle": "Classic arcade fun",
+    "primaryCategory": "games"
+  }
+}
