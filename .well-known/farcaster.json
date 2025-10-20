@@ -3,24 +3,18 @@
   "name": "Farcaster Bird",
   "icon": "https://placehold.co/128x128?text=FB",
   "homepageUrl": "https://farcasterbird.vercel.app",
-
   "accountAssociation": {
     "header": "eyJmaWQiOjUyNzU5OSwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGEwRTE5NjU2MzIxQ2FCYUY0NmQ0MzRGYTcxQjI2M0FiQjY5NTlGMDcifQ",
     "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXJiaXJkLnZlcmNlbC5hcHAifQ",
     "signature": "A0E4fsv6rGimbZ1qfZpB3xXtrc4LOydpKQj8p2Mum8oy2A+qQgzT/roegQxh4EE3OQbLCdXov5VEbEsDDNZy7xs="
   },
-
   "api": {
     "url": "https://farcasterbird.vercel.app/api/frame"
   },
-
   "frames": {
     "version": "1.0.0",
     "url": "https://farcasterbird.vercel.app/api/frame"
   },
-
-  "homeUrl": "https://farcasterbird.vercel.app/mini.html",
-
   "miniApp": {
     "version": "1.0.0",
     "name": "Farcaster Bird",
