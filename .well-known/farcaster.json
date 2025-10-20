@@ -5,12 +5,12 @@
     "version": "1.0.0",
     "url": "https://farcasterbird.vercel.app/api/frame"
   },
-  "homeUrl": "https://farcasterbird.vercel.app/mini.html",   // ← هادي مهمة
+  "homeUrl": "https://farcasterbird.vercel.app/mini.html",   
   "miniApp": {
     "version": "1.0.0",
     "name": "Farcaster Bird",
     "iconUrl": "https://placehold.co/128x128?text=FB",
-    "homeUrl": "https://farcasterbird.vercel.app/mini.html", // ← وهدي حتى هي
+    "homeUrl": "https://farcasterbird.vercel.app/mini.html",
     "imageUrl": "https://placehold.co/600x400?text=Farcaster+Bird",
     "buttonTitle": "▶️ Play",
     "splashImageUrl": "https://placehold.co/600x400?text=Loading...",
